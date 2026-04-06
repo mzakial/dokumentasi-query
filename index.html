@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi Query & Fitur | Toko Sembako</title>
+    <meta name="description" content="Penjelasan lengkap query didalam fitur-fitur aplikasi Toko Sembako">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- PrismJS - Syntax Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-twilight.min.css" rel="stylesheet" />
+    
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --sidebar-bg: #111827;
+            --card-bg: #1e293b;
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.5);
+            --accent: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        aside {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, rgba(59,130,246,0.1) 0%, transparent 100%);
+        }
+
+        .sidebar-header h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-header p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .nav-menu {
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-item {
+            padding: 0.85rem 1.2rem;
+            border-radius: 0.75rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 3rem 4rem;
+            scroll-behavior: smooth;
+        }
+
+        .section-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .section-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feature-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .feature-desc {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        /* Query Card */
+        .query-card {
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+            margin-bottom: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .query-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-color: #475569;
+        }
+
+        .query-header {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .query-badge {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--accent);
+            padding: 0.35rem 0.85rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .query-name {
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        .query-body {
+            padding: 1.5rem;
+        }
+
+        .query-explain {
+            margin-bottom: 1.5rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .query-code-wrapper {
+            position: relative;
+            background-color: #0d1117;
+            border-radius: 0.5rem;
+            border: 1px solid #1f2937;
+        }
+
+        /* Prism override */
+        pre[class*="language-"] {
+            margin: 0 !important;
+            padding: 1.5rem !important;
+            background: transparent !important;
+            text-shadow: none !important;
+            font-family: 'JetBrains Mono', monospace !important;
+            font-size: 0.9rem !important;
+        }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="sidebar-header">
+            <h1>Database Query</h1>
+            <p>Dokumentasi Teknis API Toko</p>
+        </div>
+        <nav class="nav-menu">
+            <a class="nav-item active" data-target="login">
+                Autentikasi (Login)
+                <span>→</span>
+            </a>
+            <a class="nav-item" data-target="dashboard">
+                Dashboard & Report
+                <span>→</span>
+            </a>
+            <a class="nav-item" data-target="produk">
+                Manajemen Produk
+                <span>→</span>
+            </a>
+            <a class="nav-item" data-target="transaksi">
+                Transaksi In/Out
+                <span>→</span>
+            </a>
+            <a class="nav-item" data-target="views">
+                View & Virtual Table
+                <span>→</span>
+            </a>
+        </nav>
+    </aside>
+
+    <main>
+        <!-- LOGIN SECTION -->
+        <div class="section-container active" id="login">
+            <h2 class="feature-title">Fitur Autentikasi</h2>
+            <p class="feature-desc">Query yang dieksekusi saat proses verifikasi pengguna (login) dan pengaturan sesi akun menggunakan `api/auth.php`.</p>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #60a5fa; background: rgba(96,165,250,0.15)">SELECT</span>
+                    <h3 class="query-name">Validasi Kredensial</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Digunakan untuk mengambil data akun dari tabel <b>admin_toko</b> berdasarkan email yang diinputkan pengguna. Limit 1 memastikan hanya 1 record yang diambil untuk performa.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">SELECT id_pengguna, nama_pengguna, email, kata_sandi, role
+FROM admin_toko
+WHERE email = ? 
+LIMIT 1;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #f59e0b; background: rgba(245,158,11,0.15)">UPDATE</span>
+                    <h3 class="query-name">Update Login Terakhir</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Jika login berhasil (password cocok), sistem akan memperbarui waktu <b>login_terakhir</b> menggunakan fungsi waktu server (NOW()).</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">UPDATE admin_toko 
+SET login_terakhir = NOW() 
+WHERE id_pengguna = ?;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD & LAPORAN SECTION -->
+        <div class="section-container" id="dashboard">
+            <h2 class="feature-title">Dashboard & Laporan</h2>
+            <p class="feature-desc">Logika database untuk merangkum ringkasan data yang tampil pada layar utama, dan logika filter transaksi dari `api/laporan.php`.</p>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #60a5fa; background: rgba(96,165,250,0.15)">SELECT</span>
+                    <h3 class="query-name">Laporan Transaksi Bulanan Ekstensif</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Query kompleks yang melakukan <b>JOIN</b> antara tabel transaksi, produk, dan admin_toko. Penggunaan logika <b>CASE WHEN</b> secara langsung dalam SQL mempercepat komputasi kalkulasi total harga tergantung apakah barang masuk atau barang keluar. Data difilter berdasarkan bulan dan tahun spesifik.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">SELECT
+    t.id_transaksi, t.tanggal, t.jumlah, t.status, t.keterangan,
+    p.nama_produk, p.satuan, p.kategori, p.harga_beli, p.harga_jual,
+    -- Menentukan harga satuan secara dinamis
+    CASE WHEN t.status='masuk' THEN p.harga_beli ELSE p.harga_jual END AS harga_satuan,
+    -- Mengalkulasi total_harga (jumlah * harga yg sesuai)
+    (t.jumlah * CASE WHEN t.status='masuk' THEN p.harga_beli ELSE p.harga_jual END) AS total_harga,
+    a.nama_pengguna
+FROM transaksi_produk t
+JOIN produk p ON p.id_produk = t.id_produk
+LEFT JOIN admin_toko a ON a.id_pengguna = t.id_pengguna
+WHERE YEAR(t.tanggal) = ? AND MONTH(t.tanggal) = ?
+ORDER BY t.tanggal ASC, t.id_transaksi ASC;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #c084fc; background: rgba(192,132,252,0.15)">DISTINCT</span>
+                    <h3 class="query-name">Daftar Bulan Tersedia</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Digunakan untuk mendapatkan daftar bulan riwayat transaksi (format YYYY-MM) yang unik (distinct) tanpa terduplikasi. Berfungsi mendaftar opsi pada <i>dropdown laporan</i> maksimal dua tahun terakhir.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">SELECT DISTINCT DATE_FORMAT(tanggal, '%Y-%m') AS bulan
+FROM transaksi_produk
+ORDER BY bulan DESC
+LIMIT 24;</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #60a5fa; background: rgba(96,165,250,0.15)">SELECT</span>
+                    <h3 class="query-name">Statistik Dashboard</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Digunakan di halaman Home untuk mendapat jumlah total produk, barang masuk, keluar, dan produk nyaris habis. Diambil langsung dari view yang telah disiapkan di database.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">SELECT total_produk, total_masuk, total_keluar, stok_menipis 
+FROM v_dashboard_stats 
+LIMIT 1;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRODUK SECTION -->
+        <div class="section-container" id="produk">
+            <h2 class="feature-title">Manajemen Produk</h2>
+            <p class="feature-desc">Mekanisme Create, Read, Update, Delete (CRUD) untuk data dasar produk dan batas minimum di file `api/produk.php`.</p>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #60a5fa; background: rgba(96,165,250,0.15)">SELECT</span>
+                    <h3 class="query-name">Daftar Semua Produk + Stok</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Memanggil <b>v_stok_saat_ini</b> yang secara otomatis telah menghitung stok terakhir. Opsional diberikan fungsi LIKE %?% jika user melakukan pencarian.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">SELECT * FROM v_stok_saat_ini
+WHERE nama_produk LIKE '%[query_pencarian]%' -- Opsional
+ORDER BY kategori, nama_produk;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: var(--accent); background: rgba(16,185,129,0.15)">INSERT</span>
+                    <h3 class="query-name">Tambah Produk Baru</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Menambahkan barang baru ke dalam katalog lengkap dengan data dasar dan fotonya.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">INSERT INTO produk 
+(nama_produk, satuan, harga_beli, harga_jual, stok_minimum, stok_maksimum, kategori, gambar)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #f59e0b; background: rgba(245,158,11,0.15)">UPDATE</span>
+                    <h3 class="query-name">Update Limit Stok (Maks & Min)</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Fitur khusus untuk merevisi batas notifikasi agar tidak under-stock / over-stock. Menyasar spesifik 1 produk berdasar id.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">UPDATE produk 
+SET stok_minimum = ?, stok_maksimum = ? 
+WHERE id_produk = ?;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #ef4444; background: rgba(239,68,68,0.15)">DELETE</span>
+                    <h3 class="query-name">Hapus Produk Permanen</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Menghapus data di tabel produk. Secara otomatis menghapus riwayat transaksinya berkat efek `ON DELETE CASCADE` di relasi database.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">DELETE FROM produk WHERE id_produk = ?;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TRANSAKSI SECTION -->
+        <div class="section-container" id="transaksi">
+            <h2 class="feature-title">Transaksi In / Out</h2>
+            <p class="feature-desc">Mekanisme pemotongan dan penambahan database inventaris lewat aktivitas transaksi di `api/transaksi.php`.</p>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #60a5fa; background: rgba(96,165,250,0.15)">SELECT</span>
+                    <h3 class="query-name">Riwayat Transaksi</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Sama seperti query laporan, namun difokuskan untuk di menu history dengan urutan dari yang paling baru diinput (Descending), dengan maksimal penampilan data sebesar 500 line.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">SELECT t.*, p.nama_produk, p.satuan, p.gambar, p.kategori, a.nama_pengguna
+FROM transaksi_produk t
+JOIN produk p ON p.id_produk = t.id_produk
+LEFT JOIN admin_toko a ON a.id_pengguna = t.id_pengguna
+WHERE t.status = ? -- Opsional jika difilter masuk / keluar saja
+ORDER BY t.tanggal DESC, t.created_at DESC 
+LIMIT 500;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: var(--accent); background: rgba(16,185,129,0.15)">INSERT</span>
+                    <h3 class="query-name">Pencatatan Transaksi Baru</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Query utama yang mengubah stok inventaris. Menginput rekaman baru ke tabel <i>transaksi_produk</i>. View stok akan otomatis berubah seiring eksekusi query ini.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">INSERT INTO transaksi_produk (id_produk, id_pengguna, tanggal, jumlah, status, keterangan)
+VALUES (?, ?, ?, ?, ?, ?);</code></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: var(--accent); background: rgba(16,185,129,0.15)">INSERT</span>
+                    <h3 class="query-name">Auto-Add Produk dari Transaksi</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Fungsi pintar di mana jika user mengetik nama barang baru yang belum ada di katalog saat mencatat transaksi masuk, sistem akan secara otomatis membuat produk baru.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">-- Langkah pengecekan:
+SELECT id_produk FROM produk WHERE nama_produk = ? LIMIT 1;
+-- Jika tidak ada, insert otomatis:
+INSERT INTO produk (nama_produk, kategori) VALUES (?, 'Lainnya');</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DATABASE VIEWS SECTION -->
+        <div class="section-container" id="views">
+            <h2 class="feature-title">Table Virtual (DB Views)</h2>
+            <p class="feature-desc">Query kompleks pendukung yang sudah dipaketkan ke dalam kerangka Database Layer untuk mempermudah pemanggilan Back-End (`api`). Tersimpan di `db_tokomamasayong.sql`.</p>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #a855f7; background: rgba(168,85,247,0.15)">VIEW</span>
+                    <h3 class="query-name">v_stok_saat_ini</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Jantung utama dari sistem stok toko. View ini bertugas menjumlah (SUM) semua histori transaksi masuk dan menguranginya dengan histori transaksi keluar, menghasilkan nilai stok final yg mutlak anti cacat / selisih.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">CREATE VIEW `v_stok_saat_ini` AS
+SELECT
+  p.*,
+  COALESCE(SUM(CASE WHEN t.status='masuk'  THEN t.jumlah ELSE 0 END), 0) AS total_masuk,
+  COALESCE(SUM(CASE WHEN t.status='keluar' THEN t.jumlah ELSE 0 END), 0) AS total_keluar,
+  -- Fungsi GREATEST untuk mencegah minus, kalkulasi Mutlak:
+  GREATEST(0,
+    COALESCE(SUM(CASE WHEN t.status='masuk'  THEN t.jumlah ELSE 0 END), 0) -
+    COALESCE(SUM(CASE WHEN t.status='keluar' THEN t.jumlah ELSE 0 END), 0)
+  ) AS stok_saat_ini
+FROM `produk` p
+LEFT JOIN `transaksi_produk` t ON t.id_produk = p.id_produk
+GROUP BY p.id_produk;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #a855f7; background: rgba(168,85,247,0.15)">VIEW</span>
+                    <h3 class="query-name">v_stok_menipis</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">Data yang diambil dari <b>v_stok_saat_ini</b> diseleksi lebih lanjut, hanya mengambil list di mana total stok saat ini sudah masuk titik kritis kurang dari batas minimal.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">CREATE VIEW `v_stok_menipis` AS
+SELECT * FROM `v_stok_saat_ini`
+WHERE stok_saat_ini < stok_minimum;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="query-card">
+                <div class="query-header">
+                    <span class="query-badge" style="color: #a855f7; background: rgba(168,85,247,0.15)">VIEW</span>
+                    <h3 class="query-name">v_dashboard_stats</h3>
+                </div>
+                <div class="query-body">
+                    <p class="query-explain">View statis yang merangkum 4 query besar menjadi 1 baris (row) saja agar Backend (PHP) dan Frontend (Javascript) tidak keberatan sewaktu memuat halaman paling pertama.</p>
+                    <div class="query-code-wrapper">
+<pre><code class="language-sql">CREATE VIEW `v_dashboard_stats` AS
+SELECT
+  (SELECT COUNT(*) FROM produk) AS total_produk,
+  (SELECT COALESCE(SUM(jumlah),0) FROM transaksi_produk WHERE status='masuk') AS total_masuk,
+  (SELECT COALESCE(SUM(jumlah),0) FROM transaksi_produk WHERE status='keluar') AS total_keluar,
+  (SELECT COUNT(*) FROM v_stok_menipis) AS stok_menipis;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- PrismJS - Syntax Highlighting Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-sql.min.js"></script>
+    
+    <!-- Tab Interaction Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navItems = document.querySelectorAll('.nav-item');
+            const sections = document.querySelectorAll('.section-container');
+
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    // Remove active from all nav items
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    
+                    // Add active to clicked nav item
+                    item.classList.add('active');
+
+                    // Hide all sections
+                    sections.forEach(sec => sec.classList.remove('active'));
+
+                    // Show target section
+                    const targetId = item.getAttribute('data-target');
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                        // Reset scroll position gracefully
+                        document.querySelector('main').scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
